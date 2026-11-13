@@ -1,0 +1,29 @@
+# Upptime checks these addresses about every five minutes from GitHub's
+# machines (.github/workflows/uptime.yml) and records the results in
+# history/ and as issues. The page at status.plat.plus is our own (page/).
+owner: plat-plus
+repo: status
+user-agent: plat.plus status check (+https://status.plat.plus)
+
+# Short outages stay on record: the page lists every one.
+skipDeleteIssues: true
+
+commitMessages:
+  commitAuthorName: plat.plus
+  commitAuthorEmail: 356111527+plat-plus@users.noreply.github.com
+
+# Display names and texts per language live in page/services.mjs, by slug.
+sites:
+  - name: Website and courses
+    slug: website
+    url: https://plat.plus/
+  - name: Meetings
+    slug: meetings
+    url: https://lk.plat.plus/
+  - name: Custom Blocks
+    slug: blocks
+    url: https://platplususercontent.de/
+
+status-website:
+  cname: status.plat.plus
+  name: plat.plus status

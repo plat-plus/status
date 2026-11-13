@@ -1,0 +1,345 @@
+/* Colours and type from plat.plus (apps/platform/app/app.css), in hex so
+   Dark Reader reads them. Dark mode follows the device setting. */
+@font-face {
+	font-family: "Nunito";
+	src: url("/nunito.woff2") format("woff2");
+	font-weight: 200 1000;
+	font-display: swap;
+}
+
+:root {
+	color-scheme: light;
+	--background: #fbfaf7;
+	--foreground: #0a0a0a;
+	--card: #ffffff;
+	--muted: #f2f1ec;
+	--muted-foreground: #6b6a63;
+	--border: #e6e3da;
+	--brand: #0f7a58;
+	--brand-dot: #40be91;
+	--ok: #40be91;
+	--some: #f59e0b;
+	--much: #f43f5e;
+	--none: #e6e3da;
+	--tint-up: #effbf6;
+	--tint-down: #fff1f2;
+	--tint-degraded: #fffbeb;
+	--tint-maintenance: #f0f9ff;
+	--maintenance: #0ea5e9;
+	--radius: 0.7rem;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+		--background: #0d1412;
+		--foreground: #fafafa;
+		--card: #141d1a;
+		--muted: #262626;
+		--muted-foreground: #a1a1a1;
+		--border: rgb(255 255 255 / 10%);
+		--brand: #5fd3a7;
+		--brand-dot: #40be91;
+		--ok: #33a67c;
+		--some: #fbbf24;
+		--much: #ff6467;
+		--none: #262626;
+		--tint-up: #0d3b2c;
+		--tint-down: #4c0519;
+		--tint-degraded: #451a03;
+		--tint-maintenance: #082f49;
+		--maintenance: #38bdf8;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: "Nunito", ui-sans-serif, system-ui, sans-serif;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: inherit;
+}
+
+header.site {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	max-width: 72rem;
+	margin: 0 auto;
+	padding: 1rem 1.25rem;
+}
+
+.wordmark {
+	flex: 1;
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: -0.025em;
+	color: var(--brand);
+	text-decoration: none;
+}
+.wordmark .dot-mark {
+	color: var(--brand-dot);
+}
+
+.language {
+	position: relative;
+}
+.language summary {
+	display: grid;
+	place-items: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: 999px;
+	cursor: pointer;
+	list-style: none;
+	color: var(--muted-foreground);
+}
+.language summary::-webkit-details-marker {
+	display: none;
+}
+.language summary:hover,
+.language[open] summary {
+	background: var(--muted);
+	color: var(--foreground);
+}
+.language .menu {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 11rem;
+	margin-top: 0.25rem;
+	padding: 0.25rem;
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
+}
+.language .menu a {
+	padding: 0.6rem 0.75rem;
+	border-radius: calc(var(--radius) - 0.25rem);
+	text-decoration: none;
+}
+.language .menu a:hover {
+	background: var(--muted);
+}
+.language .menu a[aria-current] {
+	font-weight: 700;
+}
+
+main,
+footer {
+	max-width: 42rem;
+	margin: 0 auto;
+	padding: 0 1.25rem;
+}
+
+h1 {
+	margin: 1.5rem 0 1rem;
+	font-size: 1.875rem;
+	font-weight: 800;
+	letter-spacing: -0.025em;
+}
+
+h2 {
+	margin: 2.5rem 0 0.75rem;
+	font-size: 1.125rem;
+	font-weight: 700;
+}
+
+h3 {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+p {
+	margin: 0;
+}
+
+.muted {
+	color: var(--muted-foreground);
+	font-size: 0.875rem;
+}
+
+.dot {
+	flex: none;
+	width: 0.625rem;
+	height: 0.625rem;
+	border-radius: 999px;
+	background: var(--ok);
+}
+
+.banner {
+	display: flex;
+	align-items: baseline;
+	gap: 0.75rem;
+	padding: 1rem 1.25rem;
+	border-radius: var(--radius);
+	background: var(--tint-up);
+	font-weight: 600;
+}
+.banner .dot {
+	transform: translateY(-0.05rem);
+}
+.banner.tone-down {
+	background: var(--tint-down);
+}
+.banner.tone-down .dot {
+	background: var(--much);
+}
+.banner.tone-degraded {
+	background: var(--tint-degraded);
+}
+.banner.tone-degraded .dot {
+	background: var(--some);
+}
+.banner.tone-maintenance {
+	background: var(--tint-maintenance);
+}
+.banner.tone-maintenance .dot {
+	background: var(--maintenance);
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.services {
+	margin-top: 1.5rem;
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+.service {
+	padding: 1rem 1.25rem;
+}
+.service + .service {
+	border-top: 1px solid var(--border);
+}
+.service-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 0.75rem;
+}
+.state {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+.state-down .dot {
+	background: var(--much);
+}
+.state-degraded .dot {
+	background: var(--some);
+}
+.state-maintenance .dot {
+	background: var(--maintenance);
+}
+
+.bars {
+	display: flex;
+	gap: 2px;
+	height: 2rem;
+}
+.bars i {
+	flex: 1;
+	min-width: 0;
+	border-radius: 2px;
+	background: var(--ok);
+}
+.bars i.some {
+	background: var(--some);
+}
+.bars i.much {
+	background: var(--much);
+}
+.bars i.none {
+	background: var(--none);
+}
+
+/* Tooltip on hover or tap: a card in the page's own colours (light in light
+   mode, dark in dark mode), no animation. Bars near an edge align to it. */
+.bars i {
+	position: relative;
+	outline: none;
+}
+.bars i:hover,
+.bars i:focus {
+	filter: brightness(0.85);
+}
+.bars i:hover::after,
+.bars i:focus::after {
+	content: attr(data-tip);
+	position: absolute;
+	bottom: calc(100% + 0.375rem);
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1;
+	width: max-content;
+	max-width: 14rem;
+	padding: 0.375rem 0.75rem;
+	white-space: pre-line;
+	font-size: 0.75rem;
+	line-height: 1.4;
+	color: var(--foreground);
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: 0.375rem;
+	box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+	pointer-events: none;
+}
+.bars i:nth-child(-n + 12):hover::after,
+.bars i:nth-child(-n + 12):focus::after {
+	left: 0;
+	transform: none;
+}
+.bars i:nth-last-child(-n + 12):hover::after,
+.bars i:nth-last-child(-n + 12):focus::after {
+	left: auto;
+	right: 0;
+	transform: none;
+}
+.bars-legend {
+	display: flex;
+	justify-content: space-between;
+	margin: 0.25rem 0 0.5rem;
+	color: var(--muted-foreground);
+	font-size: 0.75rem;
+}
+
+.events li {
+	padding: 0.75rem 0;
+}
+.events li + li {
+	border-top: 1px solid var(--border);
+}
+
+footer {
+	margin-top: 3rem;
+	padding-bottom: 3rem;
+	color: var(--muted-foreground);
+	font-size: 0.875rem;
+}
+footer nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.25rem;
+	margin-top: 0.75rem;
+}

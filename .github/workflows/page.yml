@@ -1,0 +1,51 @@
+# Builds page/ into static files after every check and uploads them to
+# Hetzner Webhosting (status.plat.plus, Nuremberg). Visitors load only these
+# files, never GitHub, so no visitor data leaves Hetzner.
+#
+# Secrets (an extra FTP user in konsoleH that can only reach the status folder;
+# Hetzner lets extra users in over FTPS only, not SFTP):
+#   STATUS_FTP_HOST      wwwNNN.your-server.de
+#   STATUS_FTP_USER      the extra FTP user's login
+#   STATUS_FTP_PASSWORD  its password
+# lftp checks the server's certificate, so a look-alike server never
+# receives the password.
+name: Page
+on:
+  workflow_run:
+    workflows: ["Uptime CI", "Summary CI", "Response Time CI"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths: ["page/**", ".github/workflows/page.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: read
+  actions: read
+concurrency:
+  group: page
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - run: node --test "page/*.test.mjs"
+      - run: node page/build.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends lftp
+      - name: Upload to Hetzner
+        env:
+          HOST: ${{ secrets.STATUS_FTP_HOST }}
+          LOGIN: ${{ secrets.STATUS_FTP_USER }}
+          LFTP_PASSWORD: ${{ secrets.STATUS_FTP_PASSWORD }}
+        run: |
+          # The pages last, so a visitor never gets a page whose style isn't there yet.
+          lftp -c "set ftp:ssl-force true; set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true; set net:max-retries 2; set net:timeout 20;
+            open --env-password -u \"$LOGIN\" ftp://$HOST;
+            mirror -R --delete --exclude-glob index.html --verbose=0 _site/ ./;
+            mirror -R --verbose=0 _site/ ./"

@@ -1,0 +1,7 @@
+# Keeps Upptime and the GitHub actions current (there is no template updater).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
