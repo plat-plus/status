@@ -49,7 +49,7 @@ export const texts = {
 		incidents: "Störungen der letzten 90 Tage",
 		noIncidents: "In den letzten 90 Tagen gab es keine Störung.",
 		checked: (when) =>
-			`Wir prüfen etwa alle fünf Minuten von außerhalb unseres Servers, ob plat.plus erreichbar ist. Zuletzt geprüft: ${when}.`,
+			`Wir prüfen regelmäßig von außerhalb unseres Servers, ob plat.plus erreichbar ist. Zuletzt geprüft: ${when}.`,
 		toApp: "Zu plat.plus",
 		imprint: "Impressum",
 		privacy: "Datenschutz",
@@ -89,7 +89,7 @@ export const texts = {
 		incidents: "Outages in the last 90 days",
 		noIncidents: "There were no outages in the last 90 days.",
 		checked: (when) =>
-			`We check about every five minutes, from outside our server, whether plat.plus can be reached. Last checked: ${when}.`,
+			`We check regularly, from outside our server, whether plat.plus can be reached. Last checked: ${when}.`,
 		toApp: "Go to plat.plus",
 		imprint: "Imprint",
 		privacy: "Privacy",
