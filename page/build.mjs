@@ -19,18 +19,29 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 const out = join(root, "_site");
 
-async function github(path) {
-	const repo = process.env.GITHUB_REPOSITORY;
-	const items = [];
-	let url = `https://api.github.com/repos/${repo}/${path}`;
-	while (url) {
+// GitHub's API answers a 502 or 503 now and then; one such answer
+// shouldn't fail the run, so a server error gets two more tries.
+async function fetchGithub(url, path) {
+	for (let attempt = 1; ; attempt++) {
 		const response = await fetch(url, {
 			headers: {
 				Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
 				Accept: "application/vnd.github+json",
 			},
 		});
-		if (!response.ok) throw new Error(`${path}: ${response.status}`);
+		if (response.ok) return response;
+		if (response.status < 500 || attempt === 3)
+			throw new Error(`${path}: ${response.status}`);
+		await new Promise((resolve) => setTimeout(resolve, attempt * 5000));
+	}
+}
+
+async function github(path) {
+	const repo = process.env.GITHUB_REPOSITORY;
+	const items = [];
+	let url = `https://api.github.com/repos/${repo}/${path}`;
+	while (url) {
+		const response = await fetchGithub(url, path);
 		const body = await response.json();
 		if (!Array.isArray(body)) return body;
 		items.push(...body);
