@@ -48,8 +48,8 @@ export const texts = {
 		maintenanceAll: "plat.plus kann in dieser Zeit kurz nicht erreichbar sein.",
 		maintenanceDown: (names) => `In dieser Zeit sind nicht erreichbar: ${names}.`,
 		pastMaintenance: "Geplante Wartungen der letzten 90 Tage",
-		maintenanceAffected: (names) => `Betroffen: ${names}.`,
-		maintenanceAllDone: "Betroffen: plat.plus.",
+		maintenanceTook: (d, names) => `${d} geplante Wartung. Betroffen: ${names}.`,
+		maintenanceTookAll: (d) => `${d} geplante Wartung.`,
 		incidents: "Störungen der letzten 90 Tage",
 		noIncidents: "In den letzten 90 Tagen gab es keine Störung.",
 		checked: (when) =>
@@ -92,8 +92,8 @@ export const texts = {
 		maintenanceAll: "plat.plus may be unavailable for a short while during this time.",
 		maintenanceDown: (names) => `Not available during this time: ${names}.`,
 		pastMaintenance: "Planned maintenance in the last 90 days",
-		maintenanceAffected: (names) => `Affected: ${names}.`,
-		maintenanceAllDone: "Affected: plat.plus.",
+		maintenanceTook: (d, names) => `${d} of planned maintenance. Affected: ${names}.`,
+		maintenanceTookAll: (d) => `${d} of planned maintenance.`,
 		incidents: "Outages in the last 90 days",
 		noIncidents: "There were no outages in the last 90 days.",
 		checked: (when) =>

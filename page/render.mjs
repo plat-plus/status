@@ -233,7 +233,12 @@ function maintenanceSection(data, t, lang) {
 	</section>`;
 }
 
-/** Planned maintenance of the last 90 days; kept apart from outages. */
+/**
+ * Planned maintenance of the last 90 days, kept apart from outages, written
+ * like an outage: when it began and how long it took. A restart's server
+ * reports the real end once it is back (page/restart.mjs), so a two-minute
+ * restart reads "2 Minuten", not as its 15-minute window.
+ */
 function pastMaintenanceSection(data, t, lang) {
 	const since = data.now.getTime() - DAYS * DAY;
 	const done = data.maintenance
@@ -244,9 +249,12 @@ function pastMaintenanceSection(data, t, lang) {
 		const names = m.expectedDown
 			.filter((slug) => serviceTexts[slug])
 			.map((slug) => serviceTexts[slug][lang].name);
-		const what = names.length ? t.maintenanceAffected(list(names, t)) : t.maintenanceAllDone;
+		const duration = formatDuration(m.end - m.start, t);
+		const what = names.length
+			? t.maintenanceTook(duration, list(names, t))
+			: t.maintenanceTookAll(duration);
 		return `<li>
-			<p class="muted">${escape(formatRange(m.start, m.end, t))}</p>
+			<p class="muted">${escape(formatWhen(m.start, t))}</p>
 			<p>${escape(what)}</p>
 		</li>`;
 	});

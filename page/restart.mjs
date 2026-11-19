@@ -8,6 +8,7 @@
  *
  *   ACTION=announce START=2026-11-21T03:30:00Z node page/restart.mjs
  *   ACTION=cancel node page/restart.mjs
+ *   ACTION=done START=2026-11-21T03:30:00Z END=2026-11-21T03:31:46Z node page/restart.mjs
  *   (needs GITHUB_TOKEN with issues: write, GITHUB_REPOSITORY)
  */
 import { parseMaintenance } from "./parse.mjs";
@@ -42,13 +43,35 @@ export function plan(action, startText, now, open) {
 	};
 }
 
-export function issueBody(start) {
-	const end = new Date(start.getTime() + WINDOW);
-	return `<!--
+/**
+ * After the restart the server reports when its sites answered again; the
+ * announcement's end moves to that moment, so the page tells the real length.
+ * Returns the issue number to rewrite, or null if none was announced for `start`.
+ */
+export function finish(startText, endText, announced) {
+	const start = new Date(startText);
+	const end = new Date(endText);
+	if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()))
+		throw new Error(`not a time: ${startText} / ${endText}`);
+	// Back before it began, or longer than the window: not a report to trust.
+	if (end <= start || end - start > WINDOW)
+		throw new Error(`end out of range: ${end.toISOString()}`);
+	return announced.find((i) => i.start.getTime() === start.getTime())?.number ?? null;
+}
+
+/** Without `end`: the announcement, a full window. With it: the restart as it went. */
+export function issueBody(start, end) {
+	const comment = `<!--
 start: ${start.toISOString()}
-end: ${end.toISOString()}
+end: ${(end ?? new Date(start.getTime() + WINDOW)).toISOString()}
 expectedDown: ${ON_MAIN_SERVER.join(", ")}
--->
+-->`;
+	if (end)
+		return `${comment}
+The server restarted to finish a security update. The website, the courses and Meetings were back after ${Math.ceil((end - start) / 1000)} seconds, as the server measured it.
+
+Announced automatically when the restart was scheduled.`;
+	return `${comment}
 The server restarts to finish a security update. The website, the courses and Meetings may be unreachable for a few minutes.
 
 Announced automatically when the restart was scheduled.`;
@@ -70,12 +93,28 @@ async function api(path, init = {}) {
 // Run as a script, not when the tests import it.
 if (process.argv[1]?.endsWith("restart.mjs")) {
 	const now = new Date();
-	const issues = await api(`issues?labels=${LABEL}&state=open&per_page=100`);
-	const open = issues.flatMap((issue) => {
-		const m = parseMaintenance(issue.body);
-		return m ? [{ number: issue.number, start: m.start }] : [];
-	});
-	const { create, close } = plan(process.env.ACTION, process.env.START, now, open);
+	const announced = (state) =>
+		api(`issues?labels=${LABEL}&state=${state}&per_page=100`).then((issues) =>
+			issues.flatMap((issue) => {
+				const m = parseMaintenance(issue.body);
+				return m ? [{ number: issue.number, start: m.start }] : [];
+			}),
+		);
+	if (process.env.ACTION === "done") {
+		// Upptime may have closed it already, so closed ones count too.
+		const number = finish(process.env.START, process.env.END, await announced("all"));
+		if (number) {
+			await api(`issues/${number}`, {
+				method: "PATCH",
+				body: JSON.stringify({
+					body: issueBody(new Date(process.env.START), new Date(process.env.END)),
+				}),
+			});
+			console.log(`#${number} ends at ${process.env.END}.`);
+		} else console.log(`No announcement for ${process.env.START}.`);
+		process.exit(0);
+	}
+	const { create, close } = plan(process.env.ACTION, process.env.START, now, await announced("open"));
 	for (const number of close) {
 		await api(`issues/${number}`, {
 			method: "PATCH",

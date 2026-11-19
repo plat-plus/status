@@ -7,12 +7,16 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "announce or cancel"
+        description: "announce, cancel, or done (the server is back)"
         required: true
         type: choice
-        options: [announce, cancel]
+        options: [announce, cancel, done]
       start:
-        description: "Restart time, ISO 8601 UTC (announce only)"
+        description: "Restart time, ISO 8601 UTC (announce, done)"
+        required: false
+        default: "none"
+      end:
+        description: "When the sites answered again, ISO 8601 UTC (done)"
         required: false
         default: "none"
 permissions:
@@ -32,4 +36,5 @@ jobs:
         env:
           ACTION: ${{ inputs.action }}
           START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
           GITHUB_TOKEN: ${{ github.token }}
