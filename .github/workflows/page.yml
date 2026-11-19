@@ -12,7 +12,7 @@
 name: Page
 on:
   workflow_run:
-    workflows: ["Uptime CI", "Summary CI", "Response Time CI"]
+    workflows: ["Uptime CI", "Summary CI", "Response Time CI", "Maintenance"]
     types: [completed]
   push:
     branches: [main]

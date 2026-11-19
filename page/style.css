@@ -273,6 +273,9 @@ ul {
 .bars i.none {
 	background: var(--none);
 }
+.bars i.maintenance {
+	background: var(--maintenance);
+}
 
 /* Tooltip on hover or tap: a card in the page's own colours (light in light
    mode, dark in dark mode), no animation. Bars near an edge align to it. */

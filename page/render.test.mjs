@@ -9,6 +9,7 @@ import {
 	formatDuration,
 	formatRange,
 	formatShare,
+	maintenanceDays,
 	renderPage,
 	uptimeShare,
 } from "./render.mjs";
@@ -61,6 +62,33 @@ test("a planned outage shows as maintenance, not as down", () => {
 	assert.match(renderPage(data, "de"), /geplante Wartung, bis 11:00 Uhr/);
 });
 
+test("past maintenance is no outage: its own list and a maintenance bar", () => {
+	const data = sampleData(now);
+	data.maintenance = [
+		{
+			start: new Date("2026-11-11T03:30:00Z"),
+			end: new Date("2026-11-11T03:45:00Z"),
+			expectedDown: ["website", "meetings"],
+		},
+	];
+	const de = renderPage(data, "de");
+	assert.match(de, /Geplante Wartungen der letzten 90 Tage/);
+	assert.match(de, /Mi\., 11\. Nov\., 04:30–04:45 Uhr/);
+	assert.match(de, /Betroffen: Website und Kurse und Meetings\./);
+	assert.match(de, /<i class="maintenance" data-tip="Mi\., 11\. Nov\.&#10;Geplante Wartung"/);
+	assert.deepEqual([...maintenanceDays(data, "website")], ["2026-11-11"]);
+	assert.equal(maintenanceDays(data, "blocks").size, 0);
+});
+
+test("maintenance still to come colours no bar", () => {
+	const data = sampleData(now);
+	data.maintenance = [
+		{ start: new Date(+now + DAY), end: new Date(+now + DAY + 900000), expectedDown: ["website"] },
+	];
+	assert.equal(maintenanceDays(data, "website").size, 0);
+	assert.doesNotMatch(renderPage(data, "de"), /Geplante Wartungen der letzten/);
+});
+
 test("a range on one day names the day once", () => {
 	const start = new Date("2026-11-15T09:00:00Z");
 	assert.equal(
@@ -90,6 +118,11 @@ test("each day bar tells its day", () => {
 	assert.equal(dayTip(23, "2026-11-13", "2026-01-01", texts.de), "Fr., 13. Nov.\n23 Minuten nicht erreichbar");
 	assert.equal(dayTip(undefined, "2026-11-13", "2026-01-01", texts.en), "Fri, Nov 13\nNo outage");
 	assert.equal(dayTip(undefined, "2026-11-13", "2026-11-14", texts.de), "Fr., 13. Nov.\nNoch nicht geprüft");
+	assert.equal(dayTip(undefined, "2026-11-13", "2026-01-01", texts.en, true), "Fri, Nov 13\nPlanned maintenance");
+	assert.equal(
+		dayTip(5, "2026-11-13", "2026-01-01", texts.de, true),
+		"Fr., 13. Nov.\n5 Minuten nicht erreichbar\nGeplante Wartung",
+	);
 });
 
 test("all up", () => {

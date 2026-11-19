@@ -42,6 +42,11 @@ export function sampleData(now) {
 				end: new Date(now.getTime() + 2 * DAY + 60 * MINUTE),
 				expectedDown: ["meetings"],
 			},
+			{
+				start: ago(3 * DAY),
+				end: ago(3 * DAY - 15 * MINUTE),
+				expectedDown: ["website", "meetings"],
+			},
 		],
 	};
 }

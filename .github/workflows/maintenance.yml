@@ -1,0 +1,35 @@
+# Announces a scheduled restart of plat.plus's main server as planned
+# maintenance, or calls it off (page/restart.mjs). The server dispatches it
+# with a fine-grained token that may only run workflows in this repo; the
+# inputs are checked in restart.mjs, and only this run may write issues.
+name: Maintenance
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "announce or cancel"
+        required: true
+        type: choice
+        options: [announce, cancel]
+      start:
+        description: "Restart time, ISO 8601 UTC (announce only)"
+        required: false
+        default: "none"
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: maintenance
+  cancel-in-progress: false
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - run: node page/restart.mjs
+        env:
+          ACTION: ${{ inputs.action }}
+          START: ${{ inputs.start }}
+          GITHUB_TOKEN: ${{ github.token }}

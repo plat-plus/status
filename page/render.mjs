@@ -146,14 +146,29 @@ function banner(states, data, t, lang) {
 	</section>`;
 }
 
-function dayClass(minutes, day, startDay) {
+/** UTC days (as Upptime counts them) on which planned maintenance for `slug` ran. */
+export function maintenanceDays(data, slug) {
+	const days = new Set();
+	for (const m of data.maintenance) {
+		if (!m.expectedDown.includes(slug) || m.start > data.now) continue;
+		const last = Math.min(m.end.getTime(), data.now.getTime());
+		for (let at = m.start.getTime(); ; at += DAY) {
+			days.add(new Date(Math.min(at, last)).toISOString().slice(0, 10));
+			if (at >= last) break;
+		}
+	}
+	return days;
+}
+
+// An outage on the same day outweighs maintenance: the bar shows the outage.
+function dayClass(minutes, day, startDay, planned) {
 	if (day < startDay) return "none";
-	if (!minutes) return "ok";
-	return minutes < 60 ? "some" : "much";
+	if (minutes) return minutes < 60 ? "some" : "much";
+	return planned ? "maintenance" : "ok";
 }
 
 /** A bar's tooltip: "Fr., 13. Nov." and what happened that day. */
-export function dayTip(minutes, day, startDay, t) {
+export function dayTip(minutes, day, startDay, t, planned = false) {
 	// Upptime counts by UTC day, so the date is read in UTC too.
 	const date = new Intl.DateTimeFormat(t.locale, {
 		timeZone: "UTC",
@@ -162,20 +177,25 @@ export function dayTip(minutes, day, startDay, t) {
 		month: "short",
 	}).format(new Date(`${day}T12:00:00Z`));
 	if (day < startDay) return `${date}\n${t.dayNone}`;
-	if (!minutes) return `${date}\n${t.dayOk}`;
-	return `${date}\n${t.dayDown(formatDuration(minutes * 60000, t))}`;
+	const lines = [date];
+	if (minutes) lines.push(t.dayDown(formatDuration(minutes * 60000, t)));
+	if (planned) lines.push(t.dayMaintenance);
+	if (lines.length === 1) lines.push(t.dayOk);
+	return lines.join("\n");
 }
 
 function serviceRow(s, data, t, lang) {
 	const keys = dayKeys(data.now);
 	const startDay = s.startTime.toISOString().slice(0, 10);
+	const plannedDays = maintenanceDays(data, s.slug);
 	// tabindex="-1": a tap focuses the bar and shows its tooltip, without
 	// 90 extra Tab stops. Screen readers get the same facts from the list below.
 	const bars = keys
 		.map((day) => {
 			const minutes = s.dailyMinutesDown?.[day];
-			const tip = escape(dayTip(minutes, day, startDay, t)).replace(/\n/g, "&#10;");
-			return `<i class="${dayClass(minutes, day, startDay)}" data-tip="${tip}" tabindex="-1"></i>`;
+			const planned = plannedDays.has(day);
+			const tip = escape(dayTip(minutes, day, startDay, t, planned)).replace(/\n/g, "&#10;");
+			return `<i class="${dayClass(minutes, day, startDay, planned)}" data-tip="${tip}" tabindex="-1"></i>`;
 		})
 		.join("");
 	const share = formatShare(uptimeShare(s, data.now), t);
@@ -207,6 +227,29 @@ function maintenanceSection(data, t, lang) {
 	});
 	return `<section>
 		<h2>${escape(t.maintenance)}</h2>
+		<ul class="events">${items.join("")}</ul>
+	</section>`;
+}
+
+/** Planned maintenance of the last 90 days; kept apart from outages. */
+function pastMaintenanceSection(data, t, lang) {
+	const since = data.now.getTime() - DAYS * DAY;
+	const done = data.maintenance
+		.filter((m) => m.end <= data.now && m.end.getTime() >= since)
+		.sort((a, b) => b.start - a.start);
+	if (!done.length) return "";
+	const items = done.map((m) => {
+		const names = m.expectedDown
+			.filter((slug) => serviceTexts[slug])
+			.map((slug) => serviceTexts[slug][lang].name);
+		const what = names.length ? t.maintenanceAffected(list(names, t)) : t.maintenanceAllDone;
+		return `<li>
+			<p class="muted">${escape(formatRange(m.start, m.end, t))}</p>
+			<p>${escape(what)}</p>
+		</li>`;
+	});
+	return `<section>
+		<h2>${escape(t.pastMaintenance)}</h2>
 		<ul class="events">${items.join("")}</ul>
 	</section>`;
 }
@@ -284,6 +327,7 @@ export function renderPage(data, lang) {
 		</section>
 		${maintenanceSection(data, t, lang)}
 		${incidentSection(data, t, lang)}
+		${pastMaintenanceSection(data, t, lang)}
 	</main>
 	<footer>
 		<p>${escape(t.checked(checked))}</p>

@@ -89,10 +89,13 @@ async function liveData() {
 		];
 	});
 
+	// Open ones are coming or under way; closed ones are done, unless they
+	// were called off (closed as "not planned"), which the page leaves out.
 	const maintenanceIssues = await github(
-		"issues?labels=maintenance&state=open&per_page=100",
+		"issues?labels=maintenance&state=all&per_page=100",
 	);
 	const maintenance = maintenanceIssues
+		.filter((issue) => issue.state_reason !== "not_planned")
 		.map((issue) => parseMaintenance(issue.body))
 		.filter(Boolean);
 
