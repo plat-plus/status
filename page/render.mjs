@@ -98,9 +98,11 @@ export function formatRange(start, end, t) {
 	return `${formatDay(start, t)}, ${formatClock(start, t, false)}–${formatClock(end, t)}${t.oClock}`;
 }
 
+// A name with its own "und" ("Website und Kurse") would read "… und Kurse
+// und Meetings"; such a list takes only commas.
 const list = (names, t) =>
-	names.length < 2
-		? names.join("")
+	names.length < 2 || names.some((n) => n.includes(` ${t.and} `))
+		? names.join(", ")
 		: `${names.slice(0, -1).join(", ")} ${t.and} ${names.at(-1)}`;
 
 /** Each service's state right now, with planned maintenance taken into account. */

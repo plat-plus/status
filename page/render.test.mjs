@@ -74,7 +74,7 @@ test("past maintenance is no outage: its own list and a maintenance bar", () => 
 	const de = renderPage(data, "de");
 	assert.match(de, /Geplante Wartungen der letzten 90 Tage/);
 	assert.match(de, /Mi\., 11\. Nov\., 04:30–04:45 Uhr/);
-	assert.match(de, /Betroffen: Website und Kurse und Meetings\./);
+	assert.match(de, /Betroffen: Website und Kurse, Meetings\./);
 	assert.match(de, /<i class="maintenance" data-tip="Mi\., 11\. Nov\.&#10;Geplante Wartung"/);
 	assert.deepEqual([...maintenanceDays(data, "website")], ["2026-11-11"]);
 	assert.equal(maintenanceDays(data, "blocks").size, 0);
