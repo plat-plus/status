@@ -4,9 +4,9 @@
     "url": "https://plat.plus/",
     "icon": "https://icons.duckduckgo.com/ip3/plat.plus.ico",
     "slug": "website",
-    "status": "up",
+    "status": "down",
     "uptime": "99.95%",
-    "uptimeDay": "100.00%",
+    "uptimeDay": "99.97%",
     "uptimeWeek": "99.95%",
     "uptimeMonth": "99.95%",
     "uptimeYear": "99.95%",
@@ -16,7 +16,8 @@
     "timeMonth": 884,
     "timeYear": 884,
     "dailyMinutesDown": {
-      "2026-11-17": 4
+      "2026-11-17": 4,
+      "2026-11-19": 0
     }
   },
   {
