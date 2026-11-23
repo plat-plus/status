@@ -19,7 +19,7 @@ sites:
     url: https://plat.plus/
   - name: Meetings
     slug: meetings
-    url: https://lk.plat.plus/
+    url: https://meet.plat.plus/
   - name: Custom Blocks
     slug: blocks
     url: https://platplususercontent.de/
