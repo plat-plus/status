@@ -12,7 +12,7 @@
     "uptimeYear": "100.00%",
     "time": 855,
     "timeDay": 717,
-    "timeWeek": 873,
+    "timeWeek": 838,
     "timeMonth": 855,
     "timeYear": 855,
     "dailyMinutesDown": {}
@@ -51,6 +51,42 @@
     "timeWeek": 592,
     "timeMonth": 565,
     "timeYear": 565,
+    "dailyMinutesDown": {}
+  },
+  {
+    "name": "Email",
+    "url": "mail.plat.plus",
+    "icon": "https://icons.duckduckgo.com/ip3/null.ico",
+    "slug": "mail",
+    "status": "up",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
+    "time": 451,
+    "timeDay": 451,
+    "timeWeek": 451,
+    "timeMonth": 451,
+    "timeYear": 451,
+    "dailyMinutesDown": {}
+  },
+  {
+    "name": "Mail policy (MTA-STS)",
+    "url": "https://mta-sts.plat.plus/.well-known/mta-sts.txt",
+    "icon": "https://icons.duckduckgo.com/ip3/mta-sts.plat.plus.ico",
+    "slug": "mail-policy",
+    "status": "up",
+    "uptime": "100.00%",
+    "uptimeDay": "100.00%",
+    "uptimeWeek": "100.00%",
+    "uptimeMonth": "100.00%",
+    "uptimeYear": "100.00%",
+    "time": 646,
+    "timeDay": 646,
+    "timeWeek": 646,
+    "timeMonth": 646,
+    "timeYear": 646,
     "dailyMinutesDown": {}
   }
 ]
