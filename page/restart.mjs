@@ -17,7 +17,7 @@ const MINUTE = 60 * 1000;
 /** The window covers the restart and the next check after it. */
 export const WINDOW = 15 * MINUTE;
 /** What runs on the main server. Custom Blocks run elsewhere. */
-export const ON_MAIN_SERVER = ["website", "meetings"];
+export const ON_MAIN_SERVER = ["website", "meetings", "mail", "mail-policy"];
 /** Marks the issues this workflow opened, so it only ever closes its own. */
 export const LABEL = "server-restart";
 
@@ -68,11 +68,11 @@ expectedDown: ${ON_MAIN_SERVER.join(", ")}
 -->`;
 	if (end)
 		return `${comment}
-The server restarted to finish a security update. The website, the courses and Meetings were back after ${Math.ceil((end - start) / 1000)} seconds, as the server measured it.
+The server restarted to finish a security update. The website, the courses, Meetings and email were back after ${Math.ceil((end - start) / 1000)} seconds, as the server measured it.
 
 Announced automatically when the restart was scheduled.`;
 	return `${comment}
-The server restarts to finish a security update. The website, the courses and Meetings may be unreachable for a few minutes.
+The server restarts to finish a security update. The website, the courses, Meetings and email may be unreachable for a few minutes.
 
 Announced automatically when the restart was scheduled.`;
 }

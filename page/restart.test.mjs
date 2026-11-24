@@ -41,7 +41,7 @@ test("odd times are refused", () => {
 test("the body is an Upptime maintenance window for the main server", () => {
 	const m = parseMaintenance(issueBody(at("2026-11-21T03:30:00Z")));
 	assert.equal(m.end.toISOString(), "2026-11-21T03:45:00.000Z");
-	assert.deepEqual(m.expectedDown, ["website", "meetings"]);
+	assert.deepEqual(m.expectedDown, ["website", "meetings", "mail", "mail-policy"]);
 	const done = issueBody(at("2026-11-21T03:30:00Z"), at("2026-11-21T03:31:46Z"));
 	assert.equal(parseMaintenance(done).end.toISOString(), "2026-11-21T03:31:46.000Z");
 	assert.match(done, /back after 106 seconds/);

@@ -19,6 +19,10 @@ export const services = {
 		de: { name: "Eigene Blöcke", subject: "Eigene Blöcke" },
 		en: { name: "Custom Blocks", subject: "Custom Blocks" },
 	},
+	mail: {
+		de: { name: "E-Mail", subject: "Die E-Mail-Dienste" },
+		en: { name: "Email", subject: "Email services" },
+	},
 };
 
 export const texts = {

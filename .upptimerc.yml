@@ -12,7 +12,8 @@ commitMessages:
   commitAuthorName: plat.plus
   commitAuthorEmail: 356111527+plat-plus@users.noreply.github.com
 
-# Display names and texts per language live in page/services.mjs, by slug.
+# Display names and texts per language live in page/texts.mjs, by slug; a
+# slug without an entry there is checked but not shown on the page.
 sites:
   - name: Website and courses
     slug: website
@@ -23,6 +24,19 @@ sites:
   - name: Custom Blocks
     slug: blocks
     url: https://platplususercontent.de/
+  # Mail to plat.plus arrives on port 25: up while the server greets with "220".
+  - name: Email
+    slug: mail
+    check: "tcp"
+    url: mail.plat.plus
+    port: 25
+    __dangerous__body_down_if_regex_missing: "^220 "
+  # The MTA-STS policy (mode enforce since 2026-11-24): if it can't be read,
+  # senders may refuse to deliver mail to plat.plus. Not shown on the page.
+  - name: Mail policy (MTA-STS)
+    slug: mail-policy
+    url: https://mta-sts.plat.plus/.well-known/mta-sts.txt
+    __dangerous__body_down_if_text_missing: "mode: enforce"
 
 status-website:
   cname: status.plat.plus
