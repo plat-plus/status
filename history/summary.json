@@ -58,19 +58,19 @@
     "url": "mail.plat.plus",
     "icon": "https://icons.duckduckgo.com/ip3/null.ico",
     "slug": "mail",
-    "status": "down",
-    "uptime": "99.41%",
-    "uptimeDay": "99.41%",
-    "uptimeWeek": "99.41%",
-    "uptimeMonth": "99.41%",
-    "uptimeYear": "99.41%",
-    "time": 451,
-    "timeDay": 451,
-    "timeWeek": 451,
-    "timeMonth": 451,
-    "timeYear": 451,
+    "status": "up",
+    "uptime": "83.93%",
+    "uptimeDay": "83.93%",
+    "uptimeWeek": "83.93%",
+    "uptimeMonth": "83.93%",
+    "uptimeYear": "83.93%",
+    "time": 478,
+    "timeDay": 478,
+    "timeWeek": 478,
+    "timeMonth": 478,
+    "timeYear": 478,
     "dailyMinutesDown": {
-      "2026-11-24": 0
+      "2026-11-24": 3
     }
   },
   {
