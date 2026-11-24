@@ -24,13 +24,17 @@ sites:
   - name: Custom Blocks
     slug: blocks
     url: https://platplususercontent.de/
-  # Mail to plat.plus arrives on port 25: up while the server greets with "220".
+  # The mail server, from outside: a connection to port 465 (sending, same
+  # server, address and firewall as port 25). Not port 25 itself: some of
+  # GitHub's runners can't reach port 25 (2026-11-24, 15:20 UTC: three
+  # timeouts from one runner while the server took mail), which put a false
+  # outage on the page. Port 25 is watched from outside by Hetzner's
+  # monitoring.
   - name: Email
     slug: mail
-    check: "tcp"
+    check: "tcp-ping"
     url: mail.plat.plus
-    port: 25
-    __dangerous__body_down_if_regex_missing: "^220 "
+    port: 465
   # The MTA-STS policy (mode enforce since 2026-11-24): if it can't be read,
   # senders may refuse to deliver mail to plat.plus. Not shown on the page.
   - name: Mail policy (MTA-STS)
